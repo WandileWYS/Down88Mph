@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private AudioSource audioSource;
     private Color originalColor;
     private int originalSortingOrder;
+    private Vector3 originalScale;
     private bool isAlive = true;
     private bool isFlying = false;
     private float horizontalInput = 0f;
@@ -51,6 +52,8 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
+        originalScale = transform.localScale;
+
         if (spriteRenderer != null)
         {
             originalColor = spriteRenderer.color;
@@ -66,6 +69,11 @@ public class PlayerController : MonoBehaviour
         if (highScoreText != null)
         {
             highScoreText.text = "BEST: " + savedHighScore + "m";
+        }
+
+        if (playerNameUI != null && PlayerPrefs.HasKey("PlayerUsername"))
+        {
+            playerNameUI.text = PlayerPrefs.GetString("PlayerUsername");
         }
 
         Time.timeScale = 1f;
@@ -187,7 +195,8 @@ public class PlayerController : MonoBehaviour
         isFlying = true;
 
         if (dirtParticles != null) dirtParticles.Stop();
-        transform.localScale = new Vector3(1.3f, 1.3f, 1f);
+
+        transform.localScale = originalScale * 1.3f;
 
         if (spriteRenderer != null)
         {
@@ -216,7 +225,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        transform.localScale = new Vector3(1f, 1f, 1f);
+        transform.localScale = originalScale;
 
         if (spriteRenderer != null)
         {
@@ -312,10 +321,12 @@ public class PlayerController : MonoBehaviour
 
     public void SetPlayerName(string nameFromBubble)
     {
+        PlayerPrefs.SetString("PlayerUsername", nameFromBubble);
+        PlayerPrefs.Save();
+
         if (playerNameUI != null)
         {
             playerNameUI.text = nameFromBubble;
         }
-        Debug.Log("Name received from Bubble: " + nameFromBubble);
     }
 }
