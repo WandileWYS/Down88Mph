@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private bool isAlive = true;
     private bool isFlying = false;
     private float horizontalInput = 0f;
+    public TextMeshProUGUI playerNameUI;
 
     [DllImport("__Internal")]
     private static extern void SendScoreToBubble(int score);
@@ -307,5 +308,14 @@ public class PlayerController : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void SetPlayerName(string nameFromBubble)
+    {
+        if (playerNameUI != null)
+        {
+            playerNameUI.text = nameFromBubble;
+        }
+        Debug.Log("Name received from Bubble: " + nameFromBubble);
     }
 }
